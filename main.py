@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # <-- Esta línea habilita CORS para todos los endpoints
 
 # Base de datos en memoria
 productos = []
@@ -30,15 +32,13 @@ def crear_producto():
 def obtener_productos():
     return jsonify(productos)
 
-
-
-# Obtener un producto por ID
+# Obtener producto por ID
 @app.route('/api/productos/<int:id>', methods=['GET'])
 def obtener_producto(id):
     producto = next((p for p in productos if p['id'] == id), None)
     return jsonify(producto) if producto else (jsonify({'mensaje': 'Producto no encontrado'}), 404)
 
-# Actualizar un producto
+# Actualizar producto
 @app.route('/api/productos/<int:id>', methods=['PUT'])
 def actualizar_producto(id):
     datos = request.get_json()
@@ -50,7 +50,7 @@ def actualizar_producto(id):
             return jsonify(producto)
     return jsonify({'mensaje': 'Producto no encontrado'}), 404
 
-# Eliminar un producto
+# Eliminar producto
 @app.route('/api/productos/<int:id>', methods=['DELETE'])
 def eliminar_producto(id):
     global productos
